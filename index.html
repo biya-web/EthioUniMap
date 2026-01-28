@@ -920,7 +920,7 @@ function toggleTracking() {
     const btn = document.getElementById('location-btn');
     if (!isTracking) {
         // watch: true makes it follow you as you walk
-        map.locate({ watch: true, enableHighAccuracy: true });
+        map.locate({ watch: true, enableHighAccuracy: true, setView: true, maxZoom: 18 });
         isTracking = true;
         btn.style.background = "#007AFF";
         btn.style.color = "white";
@@ -952,5 +952,6 @@ map.on('locationerror', function() {
 });
 
 </script>
+
 
 
