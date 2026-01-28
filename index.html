@@ -120,11 +120,7 @@
 
     satelliteLayer.addTo(map);
 
-    // 3. Layer Control
-    L.control.layers({
-        "Satellite View": satelliteLayer,
-        "Street Map": osmLayer
-    }).addTo(map);
+
 
     // ==================================================
     // 4. STYLES, LAYER SETUP, AND HELPER FUNCTION (REVISED FOR DRAWER)
@@ -956,4 +952,5 @@ map.on('locationerror', function() {
 });
 
 </script>
+
 
