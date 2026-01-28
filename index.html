@@ -7,6 +7,35 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     
 <style>
+
+        /* Professional Blue Dot Pulse Effect */
+.user-location-dot {
+    background-color: #007AFF;
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 122, 255, 0.5);
+}
+
+/* Styling for the Floating Button */
+#location-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    cursor: pointer;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    
     body { margin: 0; padding: 0; overflow: hidden; } /* Prevent body scrolling */
     #map {
         height: 100vh;
@@ -56,34 +85,7 @@
 
 
 
-<style>
-    /* Styling for the Floating Button */
-    #location-btn {
-        position: fixed;
-        top: 80px;
-        left: 10px;
-        z-index: 1000;
-        background: white;
-        border: 2px solid rgba(0,0,0,0.2);
-        border-radius: 4px;
-        padding: 10px;
-        cursor: pointer;
-        box-shadow: 0 1px 5px rgba(0,0,0,0.4);
-        font-size: 20px;
-    }
 
-    #location-btn:active {
-        background-color: #e0e0e0;
-    }
-
-    /* Professional Blue Dot Pulse Effect */
-    .user-location-dot {
-        background-color: #007AFF;
-        border: 3px solid white;
-        border-radius: 50%;
-        box-shadow: 0 0 0 5px rgba(0, 122, 255, 0.3);
-    }
-</style>
 
 </head>
 <body>
@@ -96,7 +98,7 @@
             </div>
     </div>
 
-    <button id="location-btn" onclick="findMe()" title="Track My Location">📍</button>
+<button id="location-btn" onclick="toggleTracking()">📍</button>
     
     </body>
 </html>
@@ -914,70 +916,44 @@ map.on('click', function(e) {
 
 
 
-// --- LIVE LOCATION TRACKING ---
+// --- LIVE LOCATION TRACKING LOGIC ---
 var userMarker = null;
-var accuracyCircle = null;
 var isTracking = false;
 
-function findMe() {
-    if (isTracking) {
-        // If already tracking, stop it to save battery
+function toggleTracking() {
+    const btn = document.getElementById('location-btn');
+    if (!isTracking) {
+        // watch: true makes it follow you as you walk
+        map.locate({ watch: true, enableHighAccuracy: true });
+        isTracking = true;
+        btn.style.background = "#007AFF";
+        btn.style.color = "white";
+    } else {
         map.stopLocate();
         if (userMarker) map.removeLayer(userMarker);
-        if (accuracyCircle) map.removeLayer(accuracyCircle);
+        userMarker = null;
         isTracking = false;
-        document.getElementById('location-btn').style.background = "white";
-        alert("Tracking stopped.");
-    } else {
-        // Start live tracking
-        map.locate({
-            watch: true, 
-            enableHighAccuracy: true,
-            setView: true, // Centers the map on the user when found
-            maxZoom: 18
-        });
-        isTracking = true;
-        document.getElementById('location-btn').style.background = "#d1e7ff";
+        btn.style.background = "white";
+        btn.style.color = "black";
     }
 }
 
-// When the GPS finds a location
 map.on('locationfound', function(e) {
-    var radius = e.accuracy / 2;
-
-    // Update or create the accuracy circle (pale blue area)
-    if (accuracyCircle) {
-        accuracyCircle.setLatLng(e.latlng).setRadius(radius);
-    } else {
-        accuracyCircle = L.circle(e.latlng, radius, {
-            fillColor: '#007AFF',
-            fillOpacity: 0.1,
-            weight: 1,
-            color: '#007AFF'
-        }).addTo(map);
-    }
-
-    // Update or create the "Blue Dot" marker
-    if (userMarker) {
-        userMarker.setLatLng(e.latlng);
-    } else {
+    if (!userMarker) {
         userMarker = L.circleMarker(e.latlng, {
-            radius: 8,
+            radius: 9,
             className: 'user-location-dot',
-            fillColor: '#007AFF',
-            color: 'white',
-            weight: 2,
             fillOpacity: 1
         }).addTo(map);
-        userMarker.bindPopup("<b>You are here</b>").openPopup();
+        map.flyTo(e.latlng, 18); // Zoom to you the first time
+    } else {
+        userMarker.setLatLng(e.latlng); // Move the dot as you move
     }
 });
 
-// Handle GPS errors
-map.on('locationerror', function(e) {
-    alert("Location error: " + e.message + ". Make sure GPS is ON and you are using HTTPS.");
-    isTracking = false;
-    document.getElementById('location-btn').style.background = "white";
+map.on('locationerror', function() {
+    alert("Location access denied. Please use HTTPS and enable GPS.");
 });
 
 </script>
+
