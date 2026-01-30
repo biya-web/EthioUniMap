@@ -9,10 +9,10 @@ const styles = {
 
 // 2. INITIALIZE MAP (Uses campusData from your data.js file)
 var map = L.map('map').setView(campusData.center, campusData.zoom);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+// --- SATELLITE LAYER ---
+var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     maxZoom: 19,
-    attribution: '© OpenStreetMap contributors'
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
 }).addTo(map);
 
 // 3. BUILDING GENERATOR (Loops through the data and draws polygons)
