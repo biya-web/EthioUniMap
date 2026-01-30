@@ -1,6 +1,8 @@
 // 1. GLOBAL VARIABLES
 var map;
-var allBuildingPolygons = []; // This will store every building to ensure we can hide them all
+var allBuildingPolygons = []; 
+var userMarker, userCircle;
+var isFirstLocation = true; // Flag to stop the map from snapping back
 
 // 2. INITIALIZE MAP
 map = L.map('map', { maxZoom: 18 }).setView(campusData.center, campusData.zoom);
@@ -10,20 +12,14 @@ L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/
     attribution: 'Tiles &copy; Esri'
 }).addTo(map);
 
-// 3. THE "NUCLEAR" CLOSE FUNCTION
+// 3. THE WORKING CLOSE FUNCTION (exitDrawer)
 window.closeDrawer = function() {
-    console.log("Closing drawer and hiding all boxes...");
-
-    // Hide the sidebar UI
+    console.log("Exiting drawer and hiding all boxes...");
     var drawer = document.getElementById('drawer');
     if (drawer) drawer.classList.remove('active');
 
-    // HIDE EVERY BUILDING (The fail-safe way)
     allBuildingPolygons.forEach(function(polygon) {
-        polygon.setStyle({ 
-            fillOpacity: 0, 
-            opacity: 0 
-        });
+        polygon.setStyle({ fillOpacity: 0, opacity: 0 });
     });
 };
 
@@ -38,31 +34,21 @@ function renderBuildings() {
 
     campusData.buildings.forEach(function(bldg) {
         var s = styles[bldg.type + "Style"] || styles.defaultStyle;
-
         var polygon = L.polygon(bldg.coords, {
             color: s.color,
             fillColor: s.fillColor,
-            fillOpacity: 0, // Initially hidden
-            opacity: 0,      // Initially hidden
+            fillOpacity: 0, 
+            opacity: 0,
             weight: 2,
             interactive: true
         }).addTo(map);
 
-        // Add this polygon to our global list so we can hide it later
         allBuildingPolygons.push(polygon);
 
         polygon.on('click', function(e) {
             L.DomEvent.stopPropagation(e);
-
-            // Hide ALL buildings first so only one shows at a time
-            allBuildingPolygons.forEach(function(p) {
-                p.setStyle({ fillOpacity: 0, opacity: 0 });
-            });
-
-            // Show THIS specific building
+            allBuildingPolygons.forEach(function(p) { p.setStyle({ fillOpacity: 0, opacity: 0 }); });
             this.setStyle({ fillOpacity: 0.5, opacity: 1 });
-
-            // Zoom and Open Drawer
             map.flyTo(this.getBounds().getCenter(), 18, { animate: true, duration: 1 });
             document.getElementById('drawer-title').innerText = bldg.name;
             document.getElementById('drawer-content').innerHTML = bldg.details;
@@ -71,5 +57,35 @@ function renderBuildings() {
     });
 }
 
-// 5. START
+// 5. GPS TRACKING (THE FIX FOR AUTO-SNAP)
+function onLocationFound(e) {
+    var radius = e.accuracy / 2;
+
+    if (!userMarker) {
+        userMarker = L.circleMarker(e.latlng, { radius: 8, fillColor: "#007AFF", color: "white", weight: 2, fillOpacity: 1 }).addTo(map);
+        userCircle = L.circle(e.latlng, radius).addTo(map);
+    } else {
+        userMarker.setLatLng(e.latlng);
+        userCircle.setLatLng(e.latlng).setRadius(radius);
+    }
+
+    // ONLY snap to user if it's the first time they clicked the button
+    if (isFirstLocation) {
+        map.setView(e.latlng, 17);
+        isFirstLocation = false; // Now the user can scroll away freely!
+    }
+}
+
+map.on('locationfound', onLocationFound);
+
+window.toggleTracking = function() {
+    isFirstLocation = true; // Reset so it finds you when you click the button
+    map.locate({ 
+        watch: true, 
+        enableHighAccuracy: true, 
+        setView: false // <--- THIS stops the auto-return
+    });
+};
+
+// 6. START
 renderBuildings();
