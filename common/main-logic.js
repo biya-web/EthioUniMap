@@ -76,3 +76,12 @@ window.onload = function() {
     renderBuildings();
     // Optional: toggleTracking(); // Uncomment if you want to find user immediately
 };
+
+var streetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+
+var baseMaps = {
+    "Satellite": satellite,
+    "Street Map": streetMap
+};
+
+L.control.layers(baseMaps).addTo(map);
