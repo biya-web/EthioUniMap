@@ -58,23 +58,25 @@ function renderBuildings() {
     });
 }
 
-// 4. DRAWER CONTROLS (This function now has access to activePolygon)
-function closeDrawer() {
+// Add this at the very top of your main-logic.js
+window.closeDrawer = function() {
+    console.log("Close button clicked!"); // This helps us debug
+
     // 1. Hide the drawer UI
     var drawer = document.getElementById('drawer');
     if (drawer) {
         drawer.classList.remove('active');
     }
 
-    // 2. IMPORTANT: Hide the colored building box
-    if (activePolygon) {
-        activePolygon.setStyle({ 
+    // 2. Hide the colored building box
+    if (window.activePolygon) {
+        window.activePolygon.setStyle({ 
             fillOpacity: 0, 
             opacity: 0 
         });
-        activePolygon = null; // Clear the memory
+        window.activePolygon = null; 
     }
-}
+};
 
 // 5. STARTUP
 window.onload = function() {
