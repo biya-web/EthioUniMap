@@ -1,4 +1,7 @@
-// 1. GLOBAL STYLES
+// 1. GLOBAL SCOPE - Variables defined here can be accessed by ALL functions
+var activePolygon = null; 
+var map;
+
 const styles = {
     dormStyle: { color: "#2c3e50", fillColor: "#3498db", weight: 2 },
     academicStyle: { color: "#c0392b", fillColor: "#e74c3c", weight: 2 },
@@ -8,9 +11,9 @@ const styles = {
     defaultStyle: { color: "#333", fillColor: "#999", weight: 2 }
 };
 
-// 2. INITIALIZE MAP (Limit zoom to 18 to prevent "data not available")
-var map = L.map('map', {
-    maxZoom: 18 // Safe limit for Satellite imagery
+// 2. INITIALIZE MAP (Limit zoom to 18)
+map = L.map('map', {
+    maxZoom: 18
 }).setView(campusData.center, campusData.zoom);
 
 var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -19,8 +22,6 @@ var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/service
 }).addTo(map);
 
 // 3. BUILDING GENERATOR 
-var activePolygon = null; 
-
 function renderBuildings() {
     campusData.buildings.forEach(function(bldg) {
         var bStyle = styles[bldg.type + "Style"] || styles.defaultStyle;
@@ -37,19 +38,19 @@ function renderBuildings() {
         polygon.on('click', function(e) {
             L.DomEvent.stopPropagation(e);
 
-            // Reset any currently visible building
-            if (window.activePolygon) {
-                window.activePolygon.setStyle({ fillOpacity: 0, opacity: 0 });
+            // Hide the previous building if one exists
+            if (activePolygon) {
+                activePolygon.setStyle({ fillOpacity: 0, opacity: 0 });
             }
 
-            // Show this building and save it globally
+            // Show this building and set it as the "Active" one globally
             this.setStyle({ fillOpacity: 0.5, opacity: 1 });
-            window.activePolygon = this;
+            activePolygon = this; 
 
-            // Zoom to 18 (Max safe satellite detail)
+            // Zoom and center
             map.flyTo(this.getBounds().getCenter(), 18, { animate: true, duration: 1 });
 
-            // Show Drawer
+            // Show UI Drawer
             document.getElementById('drawer-title').innerText = bldg.name;
             document.getElementById('drawer-content').innerHTML = bldg.details;
             document.getElementById('drawer').classList.add('active');
@@ -57,23 +58,32 @@ function renderBuildings() {
     });
 }
 
-// 4. DRAWER CONTROLS (Fixed Global Reference)
+// 4. DRAWER CONTROLS (This function now has access to activePolygon)
 function closeDrawer() {
-    document.getElementById('drawer').classList.remove('active');
+    // 1. Hide the drawer UI
+    var drawer = document.getElementById('drawer');
+    if (drawer) {
+        drawer.classList.remove('active');
+    }
 
-    // Use window.activePolygon to ensure we find the right one
-    if (window.activePolygon) {
-        window.activePolygon.setStyle({ fillOpacity: 0, opacity: 0 });
-        window.activePolygon = null;
+    // 2. IMPORTANT: Hide the colored building box
+    if (activePolygon) {
+        activePolygon.setStyle({ 
+            fillOpacity: 0, 
+            opacity: 0 
+        });
+        activePolygon = null; // Clear the memory
     }
 }
 
 // 5. STARTUP
-window.onload = renderBuildings;
+window.onload = function() {
+    renderBuildings();
+};
 
-// Location Tracking
+// 6. LOCATION LOGIC
 function onLocationFound(e) {
-    L.circleMarker(e.latlng, {radius: 8, fillColor: "#007AFF", color: "white", weight: 2, fillOpacity: 1}).addTo(map);
+    L.circleMarker(e.latlng, {radius: 8, fillColor: "#007AFF", color: "white"}).addTo(map);
 }
 map.on('locationfound', onLocationFound);
-function toggleTracking() { map.locate({ watch: true, setView: true, maxZoom: 18 }); }
+function toggleTracking() { map.locate({ watch: true, setView: true, maxZoom: 17 }); }
