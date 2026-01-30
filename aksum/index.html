@@ -18,11 +18,12 @@
         <img src="https://cdn-icons-png.flaticon.com/512/854/854866.png" alt="GPS">
     </div>
 
-    <div id="drawer">
-        <span class="close-drawer" onclick="closeDrawer()">&times;</span>
-        <div class="drawer-header" id="drawer-title">Building Name</div>
-        <div id="drawer-content">Details will appear here.</div>
-    </div>
+
+    <div id="drawer" class="side-drawer">
+    <button class="close-btn" onclick="closeDrawer()">×</button>
+    <h2 id="drawer-title"></h2>
+    <div id="drawer-content"></div>
+</div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
