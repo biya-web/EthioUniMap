@@ -24,10 +24,15 @@ function renderBuildings() {
         var polygon = L.polygon(bldg.coords, bStyle).addTo(map);
 
         // Click event to show details (you can link this to your info drawer)
+        
+        // Inside renderBuildings() logic...
         polygon.on('click', function() {
-            // If you have an info drawer, update it here
-            // document.getElementById('drawer-content').innerHTML = bldg.details;
-            polygon.bindPopup("<b>" + bldg.name + "</b><br>" + bldg.details).openPopup();
+                // 1. Update the content inside the drawer
+                document.getElementById('drawer-title').innerText = bldg.name;
+                document.getElementById('drawer-content').innerHTML = bldg.details;
+    
+                // 2. Add the 'active' class to slide the drawer out
+                document.getElementById('drawer').classList.add('active');
         });
     });
 }
