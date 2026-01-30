@@ -1,25 +1,72 @@
+// 1. GLOBAL STYLES (One place to change colors for all maps)
+const styles = {
+    dormStyle: { color: "#2c3e50", fillColor: "#3498db", fillOpacity: 0.6, weight: 2 },
+    academicStyle: { color: "#c0392b", fillColor: "#e74c3c", fillOpacity: 0.6, weight: 2 },
+    greenStyle: { color: "#1b5e20", fillColor: "#4caf50", fillOpacity: 0.6, weight: 2 },
+    defaultStyle: { color: "#333", fillColor: "#999", fillOpacity: 0.5, weight: 2 }
+};
 
-// 1. Define your styles once in the shared logic
-var dormStyle = { color: "blue", fillColor: "lightblue", fillOpacity: 0.5 };
-var academicStyle = { color: "red", fillColor: "pink", fillOpacity: 0.5 };
-
-// 2. Setup the Map using the data from data.js
+// 2. INITIALIZE MAP (Uses campusData from your data.js file)
 var map = L.map('map').setView(campusData.center, campusData.zoom);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-// 3. The "Universal" Building Creator
-function drawAllBuildings() {
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+
+// 3. BUILDING GENERATOR (Loops through the data and draws polygons)
+function renderBuildings() {
     campusData.buildings.forEach(function(bldg) {
-        // Decide which style to use based on the 'type' in data.js
-        var currentStyle = (bldg.type === "dorm") ? dormStyle : academicStyle;
+        // Select style based on type, fallback to default
+        var bStyle = styles[bldg.type + "Style"] || styles.defaultStyle;
 
         // Create the polygon
-        var polygon = L.polygon(bldg.coords, currentStyle).addTo(map);
+        var polygon = L.polygon(bldg.coords, bStyle).addTo(map);
 
-        // Add the click/popup logic
-        polygon.bindPopup(bldg.details);
+        // Click event to show details (you can link this to your info drawer)
+        polygon.on('click', function() {
+            // If you have an info drawer, update it here
+            // document.getElementById('drawer-content').innerHTML = bldg.details;
+            polygon.bindPopup("<b>" + bldg.name + "</b><br>" + bldg.details).openPopup();
+        });
     });
 }
 
-// Run the function
-drawAllBuildings();
+// 4. GPS / LOCATION TRACKING LOGIC
+var userMarker, userCircle;
+
+function onLocationFound(e) {
+    var radius = e.accuracy / 2;
+
+    if (!userMarker) {
+        userMarker = L.marker(e.latlng).addTo(map);
+        userCircle = L.circle(e.latlng, radius).addTo(map);
+    } else {
+        userMarker.setLatLng(e.latlng);
+        userCircle.setLatLng(e.latlng).setRadius(radius);
+    }
+}
+
+function onLocationError(e) {
+    // This triggers if the user denies permission or GPS is off
+    alert("Location access denied. Please enable GPS in your settings.");
+}
+
+map.on('locationfound', onLocationFound);
+map.on('locationerror', onLocationError);
+
+// Function to start tracking (Can be called via button or window.onload)
+function toggleTracking() {
+    map.locate({ 
+        watch: true, 
+        enableHighAccuracy: true, 
+        setView: true, 
+        maxZoom: 18 
+    });
+}
+
+// 5. AUTO-START
+window.onload = function() {
+    renderBuildings();
+    // Optional: toggleTracking(); // Uncomment if you want to find user immediately
+};
