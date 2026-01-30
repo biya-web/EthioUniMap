@@ -3,7 +3,8 @@ const styles = {
     dormStyle: { color: "#2c3e50", fillColor: "#3498db", fillOpacity: 0.6, weight: 2 },
     academicStyle: { color: "#c0392b", fillColor: "#e74c3c", fillOpacity: 0.6, weight: 2 },
     greenStyle: { color: "#1b5e20", fillColor: "#4caf50", fillOpacity: 0.6, weight: 2 },
-    defaultStyle: { color: "#333", fillColor: "#999", fillOpacity: 0.5, weight: 2 }
+    defaultStyle: { color: "#333", fillColor: "#999", fillOpacity: 0.5, weight: 2 },
+    commercialStyle: { color: "#d4af37", fillColor: "#f1c40f", fillOpacity: 0.6, weight: 2 }
 };
 
 // 2. INITIALIZE MAP (Uses campusData from your data.js file)
