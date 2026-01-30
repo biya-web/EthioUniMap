@@ -177,6 +177,139 @@ const campusData = {
             type: "class",
             coords: [[14.106584, 38.710150], [14.106454, 38.710166], [14.106501, 38.710488], [14.106636, 38.710471]],
             details: "<b>Block 62 Details</b><br>Biology laboratory."
-        }
+        },
+        {
+            id: "52",
+            name: "Block 52L",
+            type: "class",
+            coords: [[14.105991, 38.708691], [14.106022, 38.708841], [14.105809, 38.708878], [14.105783, 38.708723]],
+            details: "<b>Block 52L Details</b><br>Lecture Hall."
+        },
+        {
+            id: "44",
+            name: "Block 44",
+            type: "dorm",
+            coords: [[14.104165, 38.708058], [14.103847, 38.708106], [14.103800, 38.707843], [14.104123, 38.707811]],
+            details: "<b>Block 44 Details</b><br>Male Dormitory."
+        },
+        {
+            id: "45",
+            name: "Block 45",
+            type: "dorm",
+            coords: [[14.103863, 38.707623], [14.104191, 38.707575], [14.104144, 38.707333], [14.103832, 38.707371]],
+            details: "<b>Block 45 Details</b><br>Male Dormitory."
+        },
+        {
+            id: "46",
+            name: "Block 46",
+            type: "dorm",
+            coords: [[14.104035, 38.707151], [14.103712, 38.707205], [14.103686, 38.706942], [14.103993, 38.706904]],
+            details: "<b>Block 46 Details</b><br>Male Dormitory."
+        },
+        {
+            id: "47",
+            name: "Block 47",
+            type: "dorm",
+            coords: [[14.103519, 38.706818], [14.103202, 38.706851], [14.103171, 38.706582], [14.103488, 38.706555]],
+            details: "<b>Block 47 Details</b><br>Male Dormitory."
+        },
+        {
+            id: "Main Gate",
+            name: "Main Gate",
+            type: "commercial",
+            coords: [[14.110730, 38.712285], [14.110605, 38.712574], [14.110444, 38.712462], [14.110559, 38.712258]],
+            details: "<b>Main Gate Details</b><br>The primary entrance to the university campus."
+        },
+        {
+            id: "34",
+            name: "Block 34",
+            type: "dorm",
+            coords: [[14.106214, 38.707398], [14.106324, 38.707392], [14.106298, 38.707092], [14.106178, 38.707108]],
+            details: "<b>Block 34 Details</b><br>Male Dormitory."
+        },
+        {
+            id: "39",
+            name: "Block 39",
+            type: "dorm",
+            coords: [[14.106480, 38.706915], [14.106178, 38.706952], [14.106131, 38.706695], [14.106438, 38.706663]],
+            details: "<b>Block 39 Details</b><br>Male Dormitory."
+        },
+        {
+            id: "41",
+            name: "Block 41",
+            type: "dorm",
+            coords: [[14.106048, 38.707414], [14.105965, 38.707424], [14.105913, 38.707129], [14.106012, 38.707119]],
+            details: "<b>Block 41 Details</b><br>Male Dormitory."
+        },
+        {
+            id: "40",
+            name: "Block 40",
+            type: "dorm",
+            coords: [[14.105970, 38.706963], [14.105663, 38.707001], [14.105616, 38.706727], [14.105939, 38.706695]],
+            details: "<b>Block 40 Details</b><br>Male Dormitory."
+        },
+        {
+            id: "57",
+            name: "Block 57",
+            type: "class",
+            coords: [[14.106386, 38.709479], [14.106532, 38.709458], [14.106475, 38.709082], [14.106329, 38.709109]],
+            details: "<b>Block 57 Details</b><br>Classrooms and Department Offices."
+        },
+        {
+            id: "x",
+            name: "Block x",
+            type: "class",
+            coords: [[14.107104, 38.709962], [14.107026, 38.710284], [14.106901, 38.710262], [14.106969, 38.709935]],
+            details: "<b>Block x Details</b><br>Chemistry Laboratory."
+        },
+        {
+            id: "55",
+            name: "Block 55",
+            type: "class",
+            coords: [[14.106964, 38.709849], [14.107120, 38.709828], [14.107062, 38.709495], [14.106922, 38.709522]],
+            details: "<b>Block 55 Details</b><br>Physics Laboratory."
+        },
+        {
+            id: "Court",
+            name: "Basketball Court",
+            type: "commercial",
+            coords: [[14.105070, 38.705300], [14.104466, 38.705391], [14.104409, 38.704978], [14.105028, 38.704892]],
+            details: "<b>Basketball Court Details</b><br>Recreational Area."
+        },
+        {
+            id: "Football Field",
+            name: "Football Field",
+            type: "commercial",
+            coords: [[14.106475, 38.703551], [14.104518, 38.703530], [14.104591, 38.704710], [14.106475, 38.704758]],
+            details: "<b>Football Field Details</b><br>Main sports ground."
+        },
+        {
+            id: "27",
+            name: "Block 27",
+            type: "class",
+            coords: [[14.107089, 38.708272], [14.107323, 38.708229], [14.107307, 38.708095], [14.107068, 38.708138]],
+            details: "<b>Block 27 Details</b><br>Classrooms and Offices."
+        },
+        {
+            id: "22",
+            name: "Block 22",
+            type: "class",
+            coords: [[14.109019, 38.707162], [14.109253, 38.707253], [14.109320, 38.707113], [14.109092, 38.707028]],
+            details: "<b>Block 22 Details</b><br>Classrooms and Offices."
+        },
+        {
+            id: "94",
+            name: "Block 94",
+            type: "admin",
+            coords: [[14.108857, 38.707231], [14.108998, 38.707408], [14.108899, 38.707478], [14.108764, 38.707296]],
+            details: "<b>Block 94 Details</b><br>Administrative Offices."
+        },
+        {
+            id: "35",
+            name: "Block 35",
+            type: "dorm",
+            coords: [[14.106568, 38.706604], [14.106584, 38.706722], [14.106870, 38.706673], [14.106854, 38.706566]],
+            details: "<b>Block 35 Details</b><br>Male Dormitory."
+        },
     ]
 };
