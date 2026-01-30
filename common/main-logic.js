@@ -3,18 +3,20 @@ const styles = {
     dormStyle: { color: "#2c3e50", fillColor: "#3498db", weight: 2 },
     academicStyle: { color: "#c0392b", fillColor: "#e74c3c", weight: 2 },
     classStyle: { color: "#1b5e20", fillColor: "#4caf50", weight: 2 },
-    defaultStyle: { color: "#333", fillColor: "#999", weight: 2 },
-    commercialStyle: { color: "#d4af37", fillColor: "#f1c40f", weight: 2 }
+    greenStyle: { color: "#1b5e20", fillColor: "#4caf50", weight: 2 },
+    commercialStyle: { color: "#d4af37", fillColor: "#f1c40f", weight: 2 },
+    defaultStyle: { color: "#333", fillColor: "#999", weight: 2 }
 };
 
-// 2. INITIALIZE MAP (Max Zoom set to 19)
+// 2. INITIALIZE MAP (Strict Zoom Limits)
 var map = L.map('map', {
-    maxZoom: 19
+    maxZoom: 19,
+    zoomSnap: 0.5 // Allows smoother zooming
 }).setView(campusData.center, campusData.zoom);
 
-// Satellite Base Layer
+// Satellite Base Layer (Esri World Imagery)
 var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    maxZoom: 19,
+    maxZoom: 19, // Must match map maxZoom
     attribution: 'Tiles &copy; Esri'
 }).addTo(map);
 
@@ -22,86 +24,82 @@ var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/service
 var activePolygon = null; 
 
 function renderBuildings() {
+    // Safety check: ensure campusData exists
+    if (!campusData || !campusData.buildings) return;
+
     campusData.buildings.forEach(function(bldg) {
         var bStyle = styles[bldg.type + "Style"] || styles.defaultStyle;
 
+        // Create the polygon
         var polygon = L.polygon(bldg.coords, {
             color: bStyle.color,
             fillColor: bStyle.fillColor,
             fillOpacity: 0, 
             opacity: 0,     
-            weight: 2
+            weight: 2,
+            interactive: true // Essential for the click to work
         }).addTo(map);
 
-        // CLICK EVENT: Zoom, Center, and Show
+        // CLICK EVENT: Fixed Zoom & Center
         polygon.on('click', function(e) {
-            // Reset previous building if one was open
+            // Stop the map from clicking "through" to the ground
+            L.DomEvent.stopPropagation(e);
+
+            // Reset previous building
             if (activePolygon) {
                 activePolygon.setStyle({ fillOpacity: 0, opacity: 0 });
             }
 
-            // 1. Make the building visible
+            // Show THIS building
             this.setStyle({ fillOpacity: 0.5, opacity: 1 });
             activePolygon = this;
 
-            // 2. ZOOM AND CENTER: Fly to the building at max zoom
-            // getBounds().getCenter() ensures we hit the middle of the building
-            map.flyTo(this.getBounds().getCenter(), 19, {
+            // ZOOM AND CENTER: Fixed to max level 19
+            var center = this.getBounds().getCenter();
+            map.flyTo(center, 19, {
                 animate: true,
-                duration: 1.5 // Seconds for the smooth zoom effect
+                duration: 1.0
             });
 
-            // 3. Update drawer content
-            document.getElementById('drawer-title').innerText = bldg.name;
-            document.getElementById('drawer-content').innerHTML = bldg.details;
-            document.getElementById('drawer').classList.add('active');
+            // Update UI Drawer
+            const titleEl = document.getElementById('drawer-title');
+            const contentEl = document.getElementById('drawer-content');
+            const drawerEl = document.getElementById('drawer');
+
+            if (titleEl) titleEl.innerText = bldg.name;
+            if (contentEl) contentEl.innerHTML = bldg.details;
+            if (drawerEl) drawerEl.classList.add('active');
         });
     });
 }
 
-// 4. DRAWER CONTROLS (Hides color on close)
+// 4. DRAWER CONTROLS (Fixed Close Logic)
 function closeDrawer() {
-    // Hide drawer UI
-    document.getElementById('drawer').classList.remove('active');
+    const drawerEl = document.getElementById('drawer');
+    if (drawerEl) drawerEl.classList.remove('active');
 
-    // Hide colored box and clear active reference
     if (activePolygon) {
         activePolygon.setStyle({ fillOpacity: 0, opacity: 0 });
         activePolygon = null;
     }
 }
 
-// 5. GPS / LOCATION TRACKING
+// 5. GPS TRACKING (Refined)
 var userMarker, userCircle;
-
 function onLocationFound(e) {
-    var radius = e.accuracy / 2;
     if (!userMarker) {
         userMarker = L.circleMarker(e.latlng, { radius: 8, fillColor: "#007AFF", color: "white", weight: 2, fillOpacity: 1 }).addTo(map);
-        userCircle = L.circle(e.latlng, radius).addTo(map);
+        userCircle = L.circle(e.latlng, e.accuracy / 2).addTo(map);
     } else {
         userMarker.setLatLng(e.latlng);
-        userCircle.setLatLng(e.latlng).setRadius(radius);
+        userCircle.setLatLng(e.latlng).setRadius(e.accuracy / 2);
     }
 }
-
-function onLocationError(e) {
-    alert("Location access denied.");
-}
-
 map.on('locationfound', onLocationFound);
-map.on('locationerror', onLocationError);
 
 function toggleTracking() {
     map.locate({ watch: true, enableHighAccuracy: true, setView: true, maxZoom: 18 });
 }
 
-// 6. STARTUP
-window.onload = function() {
-    renderBuildings();
-};
-
-// Layer Control
-var streetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-var baseMaps = { "Satellite": satellite, "Street Map": streetMap };
-L.control.layers(baseMaps).addTo(map);
+// 6. RUN
+window.onload = renderBuildings;
