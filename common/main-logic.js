@@ -1,54 +1,47 @@
-// 1. GLOBAL VARIABLES (Accessible by both Click and Close functions)
-var activePolygon = null; 
-var map;
+// 1. Setup Global Variable
+window.activePolygon = null; 
 
-const styles = {
-    dormStyle: { color: "#2c3e50", fillColor: "#3498db", weight: 2 },
-    academicStyle: { color: "#c0392b", fillColor: "#e74c3c", weight: 2 },
-    classStyle: { color: "#1b5e20", fillColor: "#4caf50", weight: 2 },
-    greenStyle: { color: "#1b5e20", fillColor: "#4caf50", weight: 2 },
-    commercialStyle: { color: "#d4af37", fillColor: "#f1c40f", weight: 2 },
-    defaultStyle: { color: "#333", fillColor: "#999", weight: 2 }
-};
+// 2. Initialize Map
+var map = L.map('map', { maxZoom: 18 }).setView(campusData.center, campusData.zoom);
 
-// 2. INITIALIZE MAP
-map = L.map('map', {
-    maxZoom: 18
-}).setView(campusData.center, campusData.zoom);
-
-var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     maxZoom: 18,
     attribution: 'Tiles &copy; Esri'
 }).addTo(map);
 
-// 3. THE CLOSE FUNCTION (Must be outside renderBuildings)
-function closeDrawer() {
+// 3. THE FIX: The Close Function
+window.closeDrawer = function() {
     // Hide the sidebar
     var drawer = document.getElementById('drawer');
-    if (drawer) {
-        drawer.classList.remove('active');
-    }
+    if (drawer) drawer.classList.remove('active');
 
-    // HIDE THE COLORED BOX
-    if (activePolygon) {
-        activePolygon.setStyle({ 
+    // FORCE hide the colored building
+    if (window.activePolygon) {
+        window.activePolygon.setStyle({ 
             fillOpacity: 0, 
             opacity: 0 
         });
-        activePolygon = null; // Clear it so it's ready for next click
+        window.activePolygon = null; 
     }
-}
+};
 
-// 4. BUILDING GENERATOR 
+// 4. Building Generator
 function renderBuildings() {
+    const styles = {
+        dormStyle: { color: "#2c3e50", fillColor: "#3498db" },
+        academicStyle: { color: "#c0392b", fillColor: "#e74c3c" },
+        classStyle: { color: "#1b5e20", fillColor: "#4caf50" },
+        defaultStyle: { color: "#333", fillColor: "#999" }
+    };
+
     campusData.buildings.forEach(function(bldg) {
-        var bStyle = styles[bldg.type + "Style"] || styles.defaultStyle;
+        var s = styles[bldg.type + "Style"] || styles.defaultStyle;
 
         var polygon = L.polygon(bldg.coords, {
-            color: bStyle.color,
-            fillColor: bStyle.fillColor,
+            color: s.color,
+            fillColor: s.fillColor,
             fillOpacity: 0, 
-            opacity: 0,     
+            opacity: 0,
             weight: 2,
             interactive: true
         }).addTo(map);
@@ -56,36 +49,23 @@ function renderBuildings() {
         polygon.on('click', function(e) {
             L.DomEvent.stopPropagation(e);
 
-            // If a building is already showing, hide it first
-            if (activePolygon) {
-                activePolygon.setStyle({ fillOpacity: 0, opacity: 0 });
+            // Hide previous building if it exists
+            if (window.activePolygon) {
+                window.activePolygon.setStyle({ fillOpacity: 0, opacity: 0 });
             }
 
-            // Show THIS building
+            // Show this building and SAVE to the global window object
             this.setStyle({ fillOpacity: 0.5, opacity: 1 });
-            
-            // SAVE to the global variable so closeDrawer can see it
-            activePolygon = this; 
+            window.activePolygon = this; 
 
-            // Zoom and center
-            map.flyTo(this.getBounds().getCenter(), 18, { animate: true, duration: 1 });
-
-            // Update drawer and show it
+            // UI and Zoom
             document.getElementById('drawer-title').innerText = bldg.name;
             document.getElementById('drawer-content').innerHTML = bldg.details;
             document.getElementById('drawer').classList.add('active');
+            map.flyTo(this.getBounds().getCenter(), 18);
         });
     });
 }
 
-// 5. STARTUP
-window.onload = function() {
-    renderBuildings();
-};
-
-// 6. LOCATION TRACKING
-function onLocationFound(e) {
-    L.circleMarker(e.latlng, {radius: 8, fillColor: "#007AFF", color: "white"}).addTo(map);
-}
-map.on('locationfound', onLocationFound);
-function toggleTracking() { map.locate({ watch: true, setView: true, maxZoom: 17 }); }
+// 5. Start
+renderBuildings();
