@@ -1,4 +1,4 @@
-// 1. GLOBAL SCOPE - Variables defined here can be accessed by ALL functions
+// 1. GLOBAL VARIABLES (Accessible by both Click and Close functions)
 var activePolygon = null; 
 var map;
 
@@ -11,7 +11,7 @@ const styles = {
     defaultStyle: { color: "#333", fillColor: "#999", weight: 2 }
 };
 
-// 2. INITIALIZE MAP (Limit zoom to 18)
+// 2. INITIALIZE MAP
 map = L.map('map', {
     maxZoom: 18
 }).setView(campusData.center, campusData.zoom);
@@ -21,7 +21,25 @@ var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/service
     attribution: 'Tiles &copy; Esri'
 }).addTo(map);
 
-// 3. BUILDING GENERATOR 
+// 3. THE CLOSE FUNCTION (Must be outside renderBuildings)
+function closeDrawer() {
+    // Hide the sidebar
+    var drawer = document.getElementById('drawer');
+    if (drawer) {
+        drawer.classList.remove('active');
+    }
+
+    // HIDE THE COLORED BOX
+    if (activePolygon) {
+        activePolygon.setStyle({ 
+            fillOpacity: 0, 
+            opacity: 0 
+        });
+        activePolygon = null; // Clear it so it's ready for next click
+    }
+}
+
+// 4. BUILDING GENERATOR 
 function renderBuildings() {
     campusData.buildings.forEach(function(bldg) {
         var bStyle = styles[bldg.type + "Style"] || styles.defaultStyle;
@@ -38,19 +56,21 @@ function renderBuildings() {
         polygon.on('click', function(e) {
             L.DomEvent.stopPropagation(e);
 
-            // Hide the previous building if one exists
+            // If a building is already showing, hide it first
             if (activePolygon) {
                 activePolygon.setStyle({ fillOpacity: 0, opacity: 0 });
             }
 
-            // Show this building and set it as the "Active" one globally
+            // Show THIS building
             this.setStyle({ fillOpacity: 0.5, opacity: 1 });
+            
+            // SAVE to the global variable so closeDrawer can see it
             activePolygon = this; 
 
             // Zoom and center
             map.flyTo(this.getBounds().getCenter(), 18, { animate: true, duration: 1 });
 
-            // Show UI Drawer
+            // Update drawer and show it
             document.getElementById('drawer-title').innerText = bldg.name;
             document.getElementById('drawer-content').innerHTML = bldg.details;
             document.getElementById('drawer').classList.add('active');
@@ -58,32 +78,12 @@ function renderBuildings() {
     });
 }
 
-// Add this at the very top of your main-logic.js
-window.closeDrawer = function() {
-    console.log("Close button clicked!"); // This helps us debug
-
-    // 1. Hide the drawer UI
-    var drawer = document.getElementById('drawer');
-    if (drawer) {
-        drawer.classList.remove('active');
-    }
-
-    // 2. Hide the colored building box
-    if (window.activePolygon) {
-        window.activePolygon.setStyle({ 
-            fillOpacity: 0, 
-            opacity: 0 
-        });
-        window.activePolygon = null; 
-    }
-};
-
 // 5. STARTUP
 window.onload = function() {
     renderBuildings();
 };
 
-// 6. LOCATION LOGIC
+// 6. LOCATION TRACKING
 function onLocationFound(e) {
     L.circleMarker(e.latlng, {radius: 8, fillColor: "#007AFF", color: "white"}).addTo(map);
 }
