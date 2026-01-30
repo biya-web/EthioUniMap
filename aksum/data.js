@@ -409,5 +409,110 @@ const campusData = {
             coords: [[14.110163, 38.706088], [14.110064, 38.706050], [14.110179, 38.705744], [14.110277, 38.705787]],
             details: "<b>Block 15 Details</b><br>Classrooms."
         },
+        {
+            id: "17",
+            name: "Block 14",
+            type: "class",
+            coords: [[14.110647, 38.706319], [14.110527, 38.706270], [14.110387, 38.706646], [14.110506, 38.706700]],
+            details: "<b>Block 14 Details</b><br>Classrooms."
+        },
+        {
+            id: "85",
+            name: "Block 11",
+            type: "class",
+            coords: [[14.110526, 38.705467], [14.110636, 38.705183], [14.110407, 38.705081], [14.110282, 38.705387]],
+            details: "<b>Block 11 Details</b><br>Classrooms and offices."
+        },
+        {
+            id: "Football DSTV",
+            name: "Football DSTV",
+            type: "commercial",
+            coords: [[14.111178, 38.707038], [14.111074, 38.707349], [14.110720, 38.707215], [14.110845, 38.706904]],
+            details: "<b>Football DSTV Details</b><br>Common area for entertainment."
+        },
+        {
+            id: "13",
+            name: "Classroom Block",
+            type: "class",
+            coords: [[14.109449, 38.706218], [14.109537, 38.705998], [14.109397, 38.705955], [14.109303, 38.706159]],
+            details: "<b>Classroom Details</b><br>Academic facility for lectures."
+        },
+        {
+            id: "14",
+            name: "Academic Block",
+            type: "class",
+            coords: [[14.109903, 38.705943], [14.109949, 38.705793], [14.109746, 38.705718], [14.109700, 38.705857]],
+            details: "<b>Academic Block Details</b><br>Classrooms and faculty offices."
+        },
+        {
+            id: "86",
+            name: "Academic Block",
+            type: "class",
+            coords: [[14.109736, 38.705154], [14.109580, 38.705116], [14.109741, 38.704650], [14.109887, 38.704703]],
+            details: "<b>Academic Block Details</b><br>Classrooms and faculty offices."
+        },
+        {
+            id: "6",
+            name: "Female Dormitory",
+            type: "dorm",
+            coords: [[14.108950, 38.705245], [14.109013, 38.705106], [14.108633, 38.704982], [14.108575, 38.705106]],
+            details: "<b>Female Dormitory Details</b><br>Student housing for female students."
+        },
+        {
+            id: "50",
+            name: "Classroom Block",
+            type: "class",
+            coords: [[14.106613, 38.708441], [14.106592, 38.708269], [14.106384, 38.708301], [14.106389, 38.708468]],
+            details: "<b>Classroom Block Details</b><br>Academic facility for lectures."
+        },
+        {
+            id: "72",
+            name: "Classroom Block",
+            type: "class",
+            coords: [[14.103916, 38.708857], [14.103963, 38.709286], [14.103833, 38.709297], [14.103765, 38.708868]],
+            details: "<b>Classroom Block Details</b><br>Academic facility for student lectures."
+        },
+        {
+            id: "Social Science",
+            name: "Social Science",
+            type: "class",
+            coords: [[14.103968, 38.708497], [14.103984, 38.708632], [14.103750, 38.708658], [14.103719, 38.708519]],
+            details: "<b>College of Social Science and Languages</b><br>Academic departments."
+        },
+        {
+            id: "Pyramid Caffe",
+            name: "Pyramid Caffe",
+            type: "commercial",
+            coords: [[14.104903, 38.708697], [14.104632, 38.708724], [14.104700, 38.709153], [14.104960, 38.709126]],
+            details: "<b>Pyramid Caffe</b><br>Campus cafeteria."
+        },
+        {
+            id: "49",
+            name: "Male Dorm Block A",
+            type: "dorm",
+            coords: [[14.103706, 38.708070], [14.103732, 38.708166], [14.103409, 38.708220], [14.103393, 38.708096]],
+            details: "<b>Male Dormitory Block A</b><br>Student housing."
+        },
+        {
+            id: "79",
+            name: "Male Dorm Block B",
+            type: "dorm",
+            coords: [[14.103284, 38.708241], [14.103066, 38.708284], [14.102987, 38.707791], [14.103175, 38.707774]],
+            details: "<b>Male Dormitory Block B</b><br>Student housing."
+        },
+        {
+            id: "112",
+            name: "Male Dorm Block C",
+            type: "dorm",
+            coords: [[14.103068, 38.708626], [14.103047, 38.708428], [14.102558, 38.708476], [14.102579, 38.708685]],
+            details: "<b>Male Dormitory Block C</b><br>Student housing."
+        },
+        {
+            id: "89",
+            name: "Male Dorm Block D",
+            type: "dorm",
+            coords: [[14.102657, 38.708336], [14.102422, 38.708374], [14.102349, 38.707870], [14.102558, 38.707870]],
+            details: "<b>Male Dormitory Block D</b><br>Student housing."
+        }
     ]
 };
