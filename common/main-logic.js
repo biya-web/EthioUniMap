@@ -1,51 +1,99 @@
-// 1. GLOBAL STYLES (One place to change colors for all maps)
+// 1. GLOBAL STYLES (Colors for the buildings when clicked)
 const styles = {
-    dormStyle: { color: "#2c3e50", fillColor: "#3498db", fillOpacity: 0.6, weight: 2 },
-    academicStyle: { color: "#c0392b", fillColor: "#e74c3c", fillOpacity: 0.6, weight: 2 },
-    greenStyle: { color: "#1b5e20", fillColor: "#4caf50", fillOpacity: 0.6, weight: 2 },
-    defaultStyle: { color: "#333", fillColor: "#999", fillOpacity: 0.5, weight: 2 },
-    commercialStyle: { color: "#d4af37", fillColor: "#f1c40f", fillOpacity: 0.6, weight: 2 }
+    dormStyle: { color: "#2c3e50", fillColor: "#3498db", weight: 2 },
+    academicStyle: { color: "#c0392b", fillColor: "#e74c3c", weight: 2 },
+    classStyle: { color: "#1b5e20", fillColor: "#4caf50", weight: 2 },
+    defaultStyle: { color: "#333", fillColor: "#999", weight: 2 },
+    commercialStyle: { color: "#d4af37", fillColor: "#f1c40f", weight: 2 }
 };
 
-// 2. INITIALIZE MAP (Uses campusData from your data.js file)
+// 2. INITIALIZE MAP
+// Uses center and zoom levels defined in your data.js
 var map = L.map('map').setView(campusData.center, campusData.zoom);
-// --- SATELLITE LAYER ---
+
+// Satellite Base Layer (Esri)
 var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     maxZoom: 19,
-    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri'
 }).addTo(map);
 
-// 3. BUILDING GENERATOR (Loops through the data and draws polygons)
+// Standard Street Map Layer (Optional toggle)
+var streetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+
+var baseMaps = {
+    "Satellite": satellite,
+    "Street Map": streetMap
+};
+
+L.control.layers(baseMaps).addTo(map);
+L.control.scale({ imperial: false }).addTo(map);
+
+// 3. BUILDING GENERATOR 
+var activePolygon = null; // Stores the currently visible building
+
 function renderBuildings() {
     campusData.buildings.forEach(function(bldg) {
-        // Select style based on type, fallback to default
+        // Select style based on type
         var bStyle = styles[bldg.type + "Style"] || styles.defaultStyle;
 
-        // Create the polygon
-        var polygon = L.polygon(bldg.coords, bStyle).addTo(map);
+        // Create the polygon but keep it invisible initially
+        var polygon = L.polygon(bldg.coords, {
+            color: bStyle.color,
+            fillColor: bStyle.fillColor,
+            fillOpacity: 0, // Hidden until click
+            opacity: 0,     // Hidden until click
+            weight: 2
+        }).addTo(map);
 
-        // Click event to show details (you can link this to your info drawer)
-        
-        // Inside renderBuildings() logic...
+        // Click Event: Show the building and open the drawer
         polygon.on('click', function() {
-                // 1. Update the content inside the drawer
-                document.getElementById('drawer-title').innerText = bldg.name;
-                document.getElementById('drawer-content').innerHTML = bldg.details;
-    
-                // 2. Add the 'active' class to slide the drawer out
-                document.getElementById('drawer').classList.add('active');
+            // Hide the previous building if one was open
+            if (activePolygon) {
+                activePolygon.setStyle({ fillOpacity: 0, opacity: 0 });
+            }
+
+            // Make the clicked building visible
+            this.setStyle({
+                fillOpacity: 0.5,
+                opacity: 1
+            });
+            activePolygon = this;
+
+            // Update drawer content and slide it out
+            document.getElementById('drawer-title').innerText = bldg.name;
+            document.getElementById('drawer-content').innerHTML = bldg.details;
+            document.getElementById('drawer').classList.add('active');
         });
     });
 }
 
-// 4. GPS / LOCATION TRACKING LOGIC
+// 4. DRAWER CONTROLS
+function closeDrawer() {
+    // Hide the drawer UI
+    document.getElementById('drawer').classList.remove('active');
+
+    // Hide the building color on the map
+    if (activePolygon) {
+        activePolygon.setStyle({ fillOpacity: 0, opacity: 0 });
+        activePolygon = null;
+    }
+}
+
+// 5. GPS / LOCATION TRACKING
 var userMarker, userCircle;
 
 function onLocationFound(e) {
     var radius = e.accuracy / 2;
 
     if (!userMarker) {
-        userMarker = L.marker(e.latlng).addTo(map);
+        userMarker = L.circleMarker(e.latlng, {
+            radius: 8,
+            fillColor: "#007AFF",
+            color: "white",
+            weight: 2,
+            opacity: 1,
+            fillOpacity: 1
+        }).addTo(map);
         userCircle = L.circle(e.latlng, radius).addTo(map);
     } else {
         userMarker.setLatLng(e.latlng);
@@ -54,14 +102,12 @@ function onLocationFound(e) {
 }
 
 function onLocationError(e) {
-    // This triggers if the user denies permission or GPS is off
-    alert("Location access denied. Please enable GPS in your settings.");
+    alert("Location access denied. Please use HTTPS and enable GPS.");
 }
 
 map.on('locationfound', onLocationFound);
 map.on('locationerror', onLocationError);
 
-// Function to start tracking (Can be called via button or window.onload)
 function toggleTracking() {
     map.locate({ 
         watch: true, 
@@ -71,17 +117,7 @@ function toggleTracking() {
     });
 }
 
-// 5. AUTO-START
+// 6. STARTUP
 window.onload = function() {
     renderBuildings();
-    // Optional: toggleTracking(); // Uncomment if you want to find user immediately
 };
-
-var streetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-
-var baseMaps = {
-    "Satellite": satellite,
-    "Street Map": streetMap
-};
-
-L.control.layers(baseMaps).addTo(map);
