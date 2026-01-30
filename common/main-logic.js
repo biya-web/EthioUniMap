@@ -1,31 +1,33 @@
-// 1. Setup Global Variable
-window.activePolygon = null; 
+// 1. GLOBAL VARIABLES
+var map;
+var allBuildingPolygons = []; // This will store every building to ensure we can hide them all
 
-// 2. Initialize Map
-var map = L.map('map', { maxZoom: 18 }).setView(campusData.center, campusData.zoom);
+// 2. INITIALIZE MAP
+map = L.map('map', { maxZoom: 18 }).setView(campusData.center, campusData.zoom);
 
 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     maxZoom: 18,
     attribution: 'Tiles &copy; Esri'
 }).addTo(map);
 
-// 3. THE FIX: The Close Function
+// 3. THE "NUCLEAR" CLOSE FUNCTION
 window.closeDrawer = function() {
-    // Hide the sidebar
+    console.log("Closing drawer and hiding all boxes...");
+
+    // Hide the sidebar UI
     var drawer = document.getElementById('drawer');
     if (drawer) drawer.classList.remove('active');
 
-    // FORCE hide the colored building
-    if (window.activePolygon) {
-        window.activePolygon.setStyle({ 
+    // HIDE EVERY BUILDING (The fail-safe way)
+    allBuildingPolygons.forEach(function(polygon) {
+        polygon.setStyle({ 
             fillOpacity: 0, 
             opacity: 0 
         });
-        window.activePolygon = null; 
-    }
+    });
 };
 
-// 4. Building Generator
+// 4. BUILDING GENERATOR
 function renderBuildings() {
     const styles = {
         dormStyle: { color: "#2c3e50", fillColor: "#3498db" },
@@ -40,32 +42,34 @@ function renderBuildings() {
         var polygon = L.polygon(bldg.coords, {
             color: s.color,
             fillColor: s.fillColor,
-            fillOpacity: 0, 
-            opacity: 0,
+            fillOpacity: 0, // Initially hidden
+            opacity: 0,      // Initially hidden
             weight: 2,
             interactive: true
         }).addTo(map);
 
+        // Add this polygon to our global list so we can hide it later
+        allBuildingPolygons.push(polygon);
+
         polygon.on('click', function(e) {
             L.DomEvent.stopPropagation(e);
 
-            // Hide previous building if it exists
-            if (window.activePolygon) {
-                window.activePolygon.setStyle({ fillOpacity: 0, opacity: 0 });
-            }
+            // Hide ALL buildings first so only one shows at a time
+            allBuildingPolygons.forEach(function(p) {
+                p.setStyle({ fillOpacity: 0, opacity: 0 });
+            });
 
-            // Show this building and SAVE to the global window object
+            // Show THIS specific building
             this.setStyle({ fillOpacity: 0.5, opacity: 1 });
-            window.activePolygon = this; 
 
-            // UI and Zoom
+            // Zoom and Open Drawer
+            map.flyTo(this.getBounds().getCenter(), 18, { animate: true, duration: 1 });
             document.getElementById('drawer-title').innerText = bldg.name;
             document.getElementById('drawer-content').innerHTML = bldg.details;
             document.getElementById('drawer').classList.add('active');
-            map.flyTo(this.getBounds().getCenter(), 18);
         });
     });
 }
 
-// 5. Start
+// 5. START
 renderBuildings();
