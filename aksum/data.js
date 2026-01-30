@@ -311,5 +311,103 @@ const campusData = {
             coords: [[14.106568, 38.706604], [14.106584, 38.706722], [14.106870, 38.706673], [14.106854, 38.706566]],
             details: "<b>Block 35 Details</b><br>Male Dormitory."
         },
+        {
+            id: "38",
+            name: "Block 38",
+            type: "dorm",
+            coords: [[14.106495, 38.706169], [14.106532, 38.706464], [14.106443, 38.706470], [14.106402, 38.706180]],
+            details: "<b>Block 38 Details</b><br>Male Dormitory."
+        },
+        {
+            id: "Green Cafe",
+            name: "Green Cafe",
+            type: "commercial",
+            coords: [[14.105647, 38.708240], [14.105725, 38.708631], [14.106032, 38.708556], [14.106017, 38.708192]],
+            details: "<b>Green Cafe Details</b><br>Student cafe and lounge area."
+        },
+        {
+            id: "71",
+            name: "Block 71",
+            type: "class",
+            coords: [[14.104196, 38.708814], [14.104253, 38.709238], [14.104113, 38.709243], [14.104061, 38.708841]],
+            details: "<b>Block 71 Details</b><br>Journalism Department."
+        },
+        {
+            id: "73",
+            name: "Block 73",
+            type: "class",
+            coords: [[14.103993, 38.709957], [14.104336, 38.709903], [14.104342, 38.710032], [14.104024, 38.710085]],
+            details: "<b>Block 73 Details</b><br>Classrooms."
+        },
+        {
+            id: "68",
+            name: "Block 68",
+            type: "class",
+            coords: [[14.104581, 38.709871], [14.104596, 38.709999], [14.104929, 38.709957], [14.104914, 38.709817]],
+            details: "<b>Block 68 Details</b><br>Classrooms."
+        },
+        {
+            id: "69",
+            name: "Block 69",
+            type: "class",
+            coords: [[14.104628, 38.710182], [14.104950, 38.710134], [14.104976, 38.710284], [14.104643, 38.710337]],
+            details: "<b>Block 69 Details</b><br>Drawing Classrooms."
+        },
+        {
+            id: "Social Library",
+            name: "Social Library",
+            type: "commercial",
+            coords: [[14.109180, 38.706657], [14.109013, 38.706598], [14.109164, 38.706223], [14.109326, 38.706282]],
+            details: "<b>Social Library Details</b><br>Main student study and resource center."
+        },
+        {
+            id: "Natural Library",
+            name: "Natural Library",
+            type: "commercial",
+            coords: [[14.109315, 38.705794], [14.109492, 38.705842], [14.109612, 38.705472], [14.109456, 38.705424]],
+            details: "<b>Natural Library Details</b><br>Resource center for science and natural history topics."
+        },
+        {
+            id: "23",
+            name: "Block 23",
+            type: "class",
+            coords: [[14.109028, 38.706936], [14.109111, 38.706710], [14.109002, 38.706678], [14.108924, 38.706909]],
+            details: "<b>Block 23 Details</b><br>College of Business and Economics."
+        },
+        {
+            id: "21",
+            name: "Block 21",
+            type: "class",
+            coords: [[14.109627, 38.706657], [14.109684, 38.706512], [14.109497, 38.706431], [14.109439, 38.706549]],
+            details: "<b>Block 21 Details</b><br>Classrooms."
+        },
+        {
+            id: "20",
+            name: "Block 20",
+            type: "class",
+            coords: [[14.109767, 38.706823], [14.109871, 38.706871], [14.109996, 38.706576], [14.109892, 38.706528]],
+            details: "<b>Block 20 Details</b><br>Classrooms."
+        },
+        {
+            id: "19",
+            name: "Block 19",
+            type: "class",
+            coords: [[14.110022, 38.706941], [14.110126, 38.706989], [14.110241, 38.706678], [14.110132, 38.706624]],
+            details: "<b>Block 19 Details</b><br>Classrooms."
+        },
+        {
+            id: "18",
+            name: "Block 18",
+            type: "class",
+            coords: [[14.110152, 38.706517], [14.110272, 38.706217], [14.110152, 38.706179], [14.110043, 38.706485]],
+            details: "<b>Block 18 Details</b><br>Classrooms."
+        },
+        {
+            id: "15",
+            name: "Block 15",
+            type: "class",
+            coords: [[14.110163, 38.706088], [14.110064, 38.706050], [14.110179, 38.705744], [14.110277, 38.705787]],
+            details: "<b>Block 15 Details</b><br>Classrooms."
+        },
     ]
 };
