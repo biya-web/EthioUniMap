@@ -1,0 +1,78 @@
+/* Basic Page Reset */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Map Container */
+#map {
+    height: 100vh;
+    width: 100%;
+    z-index: 1;
+}
+
+/* Custom Location Button (Floating Action Button style) */
+.location-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    cursor: pointer;
+    z-index: 1000;
+    transition: background-color 0.3s;
+}
+
+.location-btn:active {
+    background-color: #f0f0f0;
+}
+
+.location-btn img {
+    width: 25px;
+    height: 25px;
+}
+
+/* Side Info Drawer */
+#drawer {
+    position: fixed;
+    top: 0;
+    right: -300px; /* Hidden by default */
+    width: 300px;
+    height: 100%;
+    background-color: white;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+    z-index: 2000;
+    transition: right 0.3s ease-in-out;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+#drawer.active {
+    right: 0; /* Slide in */
+}
+
+/* Close button inside drawer */
+.close-drawer {
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #333;
+    float: right;
+}
+
+.drawer-header {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 5px;
+}
